@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Flea Risk Map</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Bootstrap  -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="img/logo.png">
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
+
+  <!-- Plugins -->
+  <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+  <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+  <script src="https://code.highcharts.com/mapdata/countries/us/us-all.js"></script>
+  <script src="https://code.highcharts.com/mapdata/countries/us/us-all-all.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+  <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
+  <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+
+  <!-- <script src="js/jquery-ui.min.js"></script>
+  <link rel="stylesheet" href="css/jquery-ui.min.css"> -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+  <!-- Custom javascript -->
+  <script src="js/index.js"></script>
+  <script src="js/riskmap.js"></script>
+</head>
+ 
+<body> 
+  <header class="header bgColor">
+  </header>
+  <div id="petInfoOverlay" class="modal fade">
+    <form id="formPetInfo">
+      <div class="form-group">
+        <h5 class="textPrimary text-center">
+          Please submit following info
+        </h5>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" id="ownername" placeholder="Your name" required>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" id="petname" placeholder="Pet's name" required>
+      </div>
+      <div class="form-group">
+        <div class="col-xs-6 custom-control custom-radio custom-control-inline">
+          <input type="radio" id="isDog" name="isDog" class="custom-control-input" required>
+          <label class="custom-control-label" for="isDog">Dog</label>
+        </div>
+        <div class="col-xs-6 custom-control custom-radio custom-control-inline">
+          <input type="radio" id="isCat" name="isDog" class="custom-control-input" required>
+          <label class="custom-control-label" for="isCat">Cat</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <input type="text" class="form-control" id="species" placeholder="Species" required>
+      </div>
+      <div class="text-right">
+        <button type="submit" class="btn btn-primary" id="btnSubmitPetInfo" data-dismiss="modal">Submit</button>
+      </div>
+    </form>
+  </div>
+  <div class="modal fade" id="userEmailOverlay">
+    <form id="formUserEmail">
+      <div class="form-group">
+        <h5 class="textPrimary text-center">
+          Please submit your email address to get your results
+        </h5>
+      </div>
+      <div class="form-group row">
+        <label class="col-sm-4 col-form-label" for="email">
+          Email Address
+        </label>
+        <div class="col-sm-8">
+          <input type="email" class="form-control" id="email" placeholder="John@gmail.com" required>
+        </div>
+      </div>
+      <div class="form-group text-right">
+        <a href="#" class="btn btn-danger" id="btnCancelSubmitUserEmail" rel="modal:close">Cancel</a>
+        <input href="#" type="submit" class="btn btn-primary" id="btnSubmitUserEmail" rel="modal:close" value="Submit">
+      </div>
+    </form>
+  </div>
+  <form class="container" id="formUserInfo">
+    <div class="text-center mt-4 pt-4">
+      <h2 class="textPrimary" id="textMapTitle">Search flea risk info about your area</h2>
+    </div>
+    <div class="form-group text-right pt-4" id="switchButtonPanel" style="display: none;">
+      <button class="btn btn-info" id="btnSwitchToStateMap">
+        <svg class="bi bi-arrow-left" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          <path fill-rule="evenodd" d="M5.854 4.646a.5.5 0 010 .708L3.207 8l2.647 2.646a.5.5 0 01-.708.708l-3-3a.5.5 0 010-.708l3-3a.5.5 0 01.708 0z" clip-rule="evenodd"/>
+          <path fill-rule="evenodd" d="M2.5 8a.5.5 0 01.5-.5h10.5a.5.5 0 010 1H3a.5.5 0 01-.5-.5z" clip-rule="evenodd"/>
+        </svg>
+        Back to country map
+      </button>
+    </div>
+    <div class="userInfoPanel mt-4" id="userInfoPanel">
+      <div class="zipCodePanel mt-4" id="zipCodePanel">
+        <div class="form-group row">
+          <label class="col-sm-3 col-form-label" for="zipcode">
+            Zip Code
+          </label>
+          <div class="col-sm-9">
+            <input type="text" class="form-control" id="zipcode" placeholder="Enter your zip code" required>
+          </div>
+        </div>
+        <div class="form-group text-right">
+          <button href="#" type="submit" class="btn btn-primary" id="btnSubmitZipcode">Search</button>
+        </div>
+      </div>
+    </div>
+    <div class="container mapDiv" id="mapPanel">
+    </div>
+    <div id="month" class="text-center mt-4">
+      <div id="month-handle" class="ui-slider-handle">
+      </div>
+    </div>
+    <h5 id="monthCaption" class="text-center mt-3 textPrimary">
+    </h5>
+  </form>
+</body>
+</html>
